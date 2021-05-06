@@ -41,9 +41,11 @@
 //   signatureSecret: "frhGg8yKBwuLfDxJeWGgbAqe8Qzx07T0yY7CiSThUfiCUveaIQ",
 //   signatureMethod: "md5hash",
 // })
-// import axios from 'axios'
-// const baseURL = "https://api.smsmode.com/http/1.6/sendSMS.do"
+import axios from 'axios'
+const baseURL = "https://twiliopapi.herokuapp.com/sms"
 // const token = "WR7OqpoZeCn2WkkUN6Z1cHdrVznXC7a6"
+
+require('dotenv').config();
 
 export default {
   data() {
@@ -135,19 +137,21 @@ export default {
         // Download the helper library from https://www.twilio.com/docs/node/install
         // Your Account Sid and Auth Token from twilio.com/console
         // and set the environment variables. See http://twil.io/secure
-        const accountSid = "ACf85322cda19a34df82107aae32fd45e4";
-        const authToken = "88933a06600277d5df138eda5c008b2b";
-        const client = require('twilio')(accountSid, authToken);
+        // const client = new require('twilio')(
+        //   process.env.VUE_APP_TWILIO_SID,
+        //   process.env.VUE_APP_TWILIO_TOKEN
+        // );
 
-        const to = `+${this.countryCode}${this.phoneNumber}`
-        console.log(to);
-        client.messages
-          .create({
-            body: this.message,
-            from: '+18184854583',
-            to: to
-          })
-          .then(message => console.log(message.sid));
+        // const phone = `+${this.countryCode}${this.phoneNumber}`
+        const phone = "+2348166936008"
+        const data = {
+          phone,
+          msg: this.message,
+        }
+        console.log(data)
+        axios.post(`${baseURL}`, data)
+        .then((res) => console.log(res))
+        .catch((err) => console.log(err))
 
       } else {
         this.errMessage = 'Fill in all details correctly'

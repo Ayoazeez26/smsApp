@@ -11,6 +11,7 @@
     "@vonage/server-sdk": "^2.10.8",
     "axios": "^0.21.1",
     "core-js": "^3.6.5",
+    "dotenv": "^8.2.0",
     "nexmo-client": "^8.0.1",
     "twilio": "^3.61.0",
     "vue": "^2.6.11"
