@@ -1,6 +1,7 @@
 <template>
   <div class="container">
-    <div v-show="showMessage" class="err">{{ errMessage }}</div>
+    <div v-show="showMessage" :class="type">{{ dpMessage }}</div>
+    <div v-show="showMessage" class=""></div>
     <form @submit.prevent="validateForm">
       <h5>Recipient's phone number</h5>
       <div class="phone">
@@ -57,13 +58,15 @@ export default {
       phoneState: false,
       msgState: false,
       showMessage: false,
-      errMessage: "",
+      dpMessage: "",
+      type: "",
     }
   },
   methods: {
     validateForm() {
       if (this.countryCode === "") {
-        this.errMessage = 'Fill in the country code'
+        this.type = "err"
+        this.dpMessage = 'Fill in the country code'
         setTimeout(() => {
           this.showErr();
         }, 2000);
@@ -78,7 +81,8 @@ export default {
             this.countryCode = finalVal;
             this.setState = true;
           } else {
-            this.errMessage = "Input a valid country code"
+            this.type = "err"
+            this.dpMessage = "Input a valid country code"
             setTimeout(() => {
               this.showErr();
             }, 2000);
@@ -87,7 +91,8 @@ export default {
           }
         } else {
           if (codeArr.length === 4) {
-            this.errMessage = "Input a valid country code"
+            this.type = "err"
+            this.dpMessage = "Input a valid country code"
             setTimeout(() => {
               this.showErr();
             }, 2000);
@@ -107,7 +112,8 @@ export default {
         this.phoneNumber = phoneNumber
         this.phoneState = true
       } else {
-        this.errMessage = 'Input a valid phone number'
+        this.type = "err"
+        this.dpMessage = 'Input a valid phone number'
         setTimeout(() => {
           this.showErr();
         }, 2000);
@@ -116,14 +122,16 @@ export default {
       }
 
       if (this.message === "") {
-        this.errMessage = 'You can not send empty message'
+        this.type = "err"
+        this.dpMessage = 'You can not send empty message'
         setTimeout(() => {
           this.showErr();
         }, 2000);
         this.showMessage = !this.showMessage
         this.msgState = false;
       } else if (this.message.length > 140) {
-        this.errMessage = 'Maximum text length of 140 characters'
+        this.type = "err"
+        this.dpMessage = 'Maximum text length of 140 characters'
         setTimeout(() => {
           this.showErr();
         }, 2000);
@@ -150,11 +158,23 @@ export default {
         }
         console.log(data)
         axios.post(`${baseURL}`, data)
-        .then((res) => console.log(res))
+        .then((res) => {
+          console.log(res)
+          this.type = "suc"
+          this.dpMessage = 'Message sent successfully'
+          setTimeout(() => {
+            this.showErr();
+          }, 2000);
+          this.showMessage = !this.showMessage
+          this.message = ""
+          this.countryCode = ""
+          this.phoneNumber = ""
+        })
         .catch((err) => console.log(err))
 
       } else {
-        this.errMessage = 'Fill in all details correctly'
+        this.type = "err"
+        this.dpMessage = 'Fill in all details correctly'
         setTimeout(() => {
           this.showErr();
         }, 2000);
@@ -163,9 +183,6 @@ export default {
     },
     showErr() {
       this.showMessage = !this.showMessage
-      // ACCOUNT SID = ACf85322cda19a34df82107aae32fd45e4
-      // AUTH TOKEN = 88933a06600277d5df138eda5c008b2b
-      // PHONE NUMBER = +18184854583
     }
   },
 };
@@ -215,6 +232,11 @@ button {
 }
 .err {
   background-color: #DF450B;
+  padding: 10px 0;
+  color: #FFF;
+}
+.suc {
+  background-color: #00FFA9;
   padding: 10px 0;
   color: #FFF;
 }
